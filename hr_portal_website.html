@@ -1,0 +1,302 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); background: var(--color-background-tertiary); }
+
+.portal-header {
+  background: var(--color-background-primary);
+  border-bottom: 0.5px solid var(--color-border-tertiary);
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+}
+.portal-logo { font-size: 15px; font-weight: 500; color: var(--color-text-primary); display: flex; align-items: center; gap: 8px; }
+.logo-dot { width: 10px; height: 10px; border-radius: 50%; background: #1D9E75; }
+.nav-tabs { display: flex; gap: 0; border-bottom: 0.5px solid var(--color-border-tertiary); background: var(--color-background-primary); padding: 0 1.5rem; }
+.nav-tab { padding: 10px 16px; font-size: 13px; color: var(--color-text-secondary); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; transition: color 0.15s; }
+.nav-tab.active { color: #1D9E75; border-bottom-color: #1D9E75; font-weight: 500; }
+.nav-tab:hover:not(.active) { color: var(--color-text-primary); }
+
+.layout { display: flex; height: calc(100vh - 104px); min-height: 500px; }
+.sidebar { width: 200px; flex-shrink: 0; background: var(--color-background-primary); border-right: 0.5px solid var(--color-border-tertiary); padding: 1rem 0; overflow-y: auto; }
+.sidebar-item { padding: 8px 1.25rem; font-size: 13px; color: var(--color-text-secondary); cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.1s; }
+.sidebar-item:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+.sidebar-item.active { background: #E1F5EE; color: #0F6E56; font-weight: 500; }
+.sidebar-group { font-size: 11px; color: var(--color-text-tertiary); padding: 12px 1.25rem 4px; text-transform: uppercase; letter-spacing: 0.06em; }
+.sidebar-dot { width: 6px; height: 6px; border-radius: 50%; background: #9FE1CB; flex-shrink: 0; }
+.sidebar-item.active .sidebar-dot { background: #1D9E75; }
+
+.main { flex: 1; overflow-y: auto; padding: 1.5rem; background: var(--color-background-tertiary); }
+.welcome-bar { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; }
+.welcome-text { font-size: 14px; color: var(--color-text-secondary); }
+.welcome-name { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
+.badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; background: #E1F5EE; color: #0F6E56; font-weight: 500; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 1.25rem; }
+.stat-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.875rem 1rem; }
+.stat-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
+.stat-val { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+.stat-sub { font-size: 11px; color: #1D9E75; margin-top: 2px; }
+
+.section-title { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+.modules-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 1.25rem; }
+.mod-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem; cursor: pointer; transition: border-color 0.15s; }
+.mod-card:hover { border-color: var(--color-border-secondary); }
+.mod-icon { width: 32px; height: 32px; border-radius: var(--border-radius-md); display: flex; align-items: center; justify-content: center; margin-bottom: 8px; font-size: 15px; }
+.mod-name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 2px; }
+.mod-desc { font-size: 11px; color: var(--color-text-secondary); }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; }
+.card-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 10px; }
+.pipeline-item { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.pipeline-item:last-child { border-bottom: none; }
+.pi-name { font-size: 12px; color: var(--color-text-secondary); }
+.pi-badge { font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
+.pi-count { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+.status-active { background: #E1F5EE; color: #0F6E56; }
+.status-pending { background: #FAEEDA; color: #854F0B; }
+.status-info { background: #E6F1FB; color: #185FA5; }
+
+.progress-bar-wrap { margin-bottom: 8px; }
+.progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
+.progress-track { height: 6px; background: var(--color-background-secondary); border-radius: 4px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 4px; }
+
+.ess-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.ess-btn { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 10px; text-align: center; cursor: pointer; transition: background 0.1s; }
+.ess-btn:hover { background: var(--color-background-primary); }
+.ess-btn-icon { font-size: 18px; margin-bottom: 4px; }
+.ess-btn-text { font-size: 11px; color: var(--color-text-secondary); }
+
+.tax-box { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.875rem; margin-top: 10px; border: 0.5px solid var(--color-border-tertiary); }
+.tax-input { width: 100%; padding: 7px 10px; font-size: 13px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-primary); margin: 6px 0; }
+.tax-label { font-size: 12px; color: var(--color-text-secondary); }
+.btn-primary { background: #1D9E75; color: white; border: none; border-radius: var(--border-radius-md); padding: 7px 18px; font-size: 13px; cursor: pointer; font-weight: 500; margin-top: 6px; }
+
+.screen { display: none; }
+.screen.active { display: block; }
+</style>
+
+<h2 class="sr-only">HR Portal — Employee Self Service and Recruitment Dashboard</h2>
+
+<div class="portal-header">
+  <div class="portal-logo"><div class="logo-dot"></div>HR Portal</div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span style="font-size:13px;color:var(--color-text-secondary)">Welcome, <strong style="color:var(--color-text-primary);font-weight:500">Manikandan M</strong></span>
+    <div style="width:30px;height:30px;border-radius:50%;background:#1D9E75;display:flex;align-items:center;justify-content:center;font-size:12px;color:white;font-weight:500">MM</div>
+  </div>
+</div>
+
+<div class="nav-tabs">
+  <div class="nav-tab active" onclick="switchScreen('home',this)">Home</div>
+  <div class="nav-tab" onclick="switchScreen('ess',this)">ESS</div>
+  <div class="nav-tab" onclick="switchScreen('recruitment',this)">Recruitment</div>
+  <div class="nav-tab" onclick="switchScreen('analytics',this)">Analytics</div>
+  <div class="nav-tab" onclick="switchScreen('policy',this)">Policy</div>
+  <div class="nav-tab" onclick="switchScreen('kb',this)">Knowledge Base</div>
+</div>
+
+<div class="layout">
+  <div class="sidebar" id="sidebar-home">
+    <div class="sidebar-group">My Page</div>
+    <div class="sidebar-item active"><div class="sidebar-dot"></div>Attendance</div>
+    <div class="sidebar-item"><div class="sidebar-dot"></div>General Details</div>
+    <div class="sidebar-item"><div class="sidebar-dot"></div>My Salary Slip</div>
+    <div class="sidebar-item"><div class="sidebar-dot"></div>My Income Tax Slip</div>
+    <div class="sidebar-item"><div class="sidebar-dot"></div>Increment Letter</div>
+    <div class="sidebar-item"><div class="sidebar-dot"></div>Leave</div>
+    <div class="sidebar-item"><div class="sidebar-dot"></div>Permission</div>
+    <div class="sidebar-item"><div class="sidebar-dot"></div>My Address Book</div>
+    <div class="sidebar-item"><div class="sidebar-dot"></div>Daily Notes</div>
+    <div class="sidebar-group">Team</div>
+    <div class="sidebar-item"><div class="sidebar-dot"></div>My Team</div>
+    <div class="sidebar-item"><div class="sidebar-dot"></div>Team Attendance Report</div>
+    <div class="sidebar-group">Tools</div>
+    <div class="sidebar-item"><div class="sidebar-dot"></div>My Trainings</div>
+    <div class="sidebar-item"><div class="sidebar-dot"></div>Change Password</div>
+    <div class="sidebar-item"><div class="sidebar-dot"></div>Tax Calculator</div>
+  </div>
+
+  <div class="main">
+    <div id="screen-home" class="screen active">
+      <div class="welcome-bar">
+        <div>
+          <div class="welcome-text">Good morning</div>
+          <div class="welcome-name">Manikandan M</div>
+        </div>
+        <div class="badge">Active Employee</div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">Leave Balance</div><div class="stat-val">12</div><div class="stat-sub">days remaining</div></div>
+        <div class="stat-card"><div class="stat-label">Attendance</div><div class="stat-val">96%</div><div class="stat-sub">this month</div></div>
+        <div class="stat-card"><div class="stat-label">Pending Tasks</div><div class="stat-val">3</div><div class="stat-sub">action needed</div></div>
+        <div class="stat-card"><div class="stat-label">IT Declaration</div><div class="stat-val">₹0</div><div class="stat-sub">submitted</div></div>
+      </div>
+
+      <div class="section-title">Quick Access</div>
+      <div class="modules-grid" style="margin-bottom:1.25rem">
+        <div class="mod-card">
+          <div class="mod-icon" style="background:#E1F5EE">📋</div>
+          <div class="mod-name">ESS</div>
+          <div class="mod-desc">Self-service portal</div>
+        </div>
+        <div class="mod-card">
+          <div class="mod-icon" style="background:#E6F1FB">📚</div>
+          <div class="mod-name">LMS</div>
+          <div class="mod-desc">Learning management</div>
+        </div>
+        <div class="mod-card">
+          <div class="mod-icon" style="background:#FAEEDA">📈</div>
+          <div class="mod-name">PMS</div>
+          <div class="mod-desc">Performance tracking</div>
+        </div>
+        <div class="mod-card">
+          <div class="mod-icon" style="background:#EEEDFE">🗂️</div>
+          <div class="mod-name">Directory</div>
+          <div class="mod-desc">Employee directory</div>
+        </div>
+        <div class="mod-card">
+          <div class="mod-icon" style="background:#EAF3DE">📊</div>
+          <div class="mod-name">Dashboard</div>
+          <div class="mod-desc">Analytics & reports</div>
+        </div>
+        <div class="mod-card">
+          <div class="mod-icon" style="background:#FCEBEB">📖</div>
+          <div class="mod-name">Knowledge Base</div>
+          <div class="mod-desc">Manuals & policies</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">Income Tax Slip</div>
+          <div class="tax-box">
+            <div class="tax-label">Password protected — enter date of birth</div>
+            <input class="tax-input" type="password" placeholder="YYYYMMDD" />
+            <button class="btn-primary">Login</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Attendance this month</div>
+          <div class="progress-bar-wrap"><div class="progress-label"><span>Present</span><span>22/23</span></div><div class="progress-track"><div class="progress-fill" style="width:95%;background:#1D9E75"></div></div></div>
+          <div class="progress-bar-wrap"><div class="progress-label"><span>Leave taken</span><span>1/12</span></div><div class="progress-track"><div class="progress-fill" style="width:8%;background:#EF9F27"></div></div></div>
+          <div class="progress-bar-wrap"><div class="progress-label"><span>Permission</span><span>2 hrs</span></div><div class="progress-track"><div class="progress-fill" style="width:20%;background:#378ADD"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-ess" class="screen">
+      <div class="section-title" style="margin-bottom:12px">Employee self service</div>
+      <div class="ess-grid">
+        <div class="ess-btn"><div class="ess-btn-icon">🏢</div><div class="ess-btn-text">Admin Services</div></div>
+        <div class="ess-btn"><div class="ess-btn-icon">🌿</div><div class="ess-btn-text">Leave Management</div></div>
+        <div class="ess-btn"><div class="ess-btn-icon">💸</div><div class="ess-btn-text">Reimbursement</div></div>
+        <div class="ess-btn"><div class="ess-btn-icon">✈️</div><div class="ess-btn-text">Travel Management</div></div>
+        <div class="ess-btn"><div class="ess-btn-icon">🧑‍💼</div><div class="ess-btn-text">Recruitment</div></div>
+        <div class="ess-btn"><div class="ess-btn-icon">🔄</div><div class="ess-btn-text">Separation</div></div>
+        <div class="ess-btn"><div class="ess-btn-icon">💻</div><div class="ess-btn-text">IT Declaration</div></div>
+        <div class="ess-btn"><div class="ess-btn-icon">🎫</div><div class="ess-btn-text">LTA Claims</div></div>
+        <div class="ess-btn"><div class="ess-btn-icon">🏦</div><div class="ess-btn-text">Loan Requisition</div></div>
+      </div>
+    </div>
+
+    <div id="screen-recruitment" class="screen">
+      <div class="section-title" style="margin-bottom:12px">Hire to retire dashboard — Power BI</div>
+      <div class="stats-grid" style="margin-bottom:1.25rem">
+        <div class="stat-card"><div class="stat-label">Total MRFs</div><div class="stat-val">48</div><div class="stat-sub">active requisitions</div></div>
+        <div class="stat-card"><div class="stat-label">Screened</div><div class="stat-val">132</div><div class="stat-sub">candidates</div></div>
+        <div class="stat-card"><div class="stat-label">Shortlisted</div><div class="stat-val">27</div><div class="stat-sub">this quarter</div></div>
+        <div class="stat-card"><div class="stat-label">Onboarding</div><div class="stat-val">9</div><div class="stat-sub">in progress</div></div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">Recruitment pipeline</div>
+          <div class="pipeline-item"><span class="pi-name">Requisition Details</span><span class="pi-badge status-info">48 open</span><span class="pi-count"></span></div>
+          <div class="pipeline-item"><span class="pi-name">MRF Details</span><span class="pi-badge status-pending">12 pending</span></div>
+          <div class="pipeline-item"><span class="pi-name">Job Share Status</span><span class="pi-badge status-active">Published</span></div>
+          <div class="pipeline-item"><span class="pi-name">Screening</span><span class="pi-badge status-info">132 done</span></div>
+          <div class="pipeline-item"><span class="pi-name">Shortlist</span><span class="pi-badge status-active">27 listed</span></div>
+          <div class="pipeline-item"><span class="pi-name">Post Offer</span><span class="pi-badge status-pending">5 pending</span></div>
+          <div class="pipeline-item"><span class="pi-name">Onboarding</span><span class="pi-badge status-active">9 active</span></div>
+          <div class="pipeline-item"><span class="pi-name">Confirmation</span><span class="pi-badge status-info">3 due</span></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Stage completion</div>
+          <div class="progress-bar-wrap"><div class="progress-label"><span>Screening</span><span>82%</span></div><div class="progress-track"><div class="progress-fill" style="width:82%;background:#1D9E75"></div></div></div>
+          <div class="progress-bar-wrap"><div class="progress-label"><span>Shortlisting</span><span>56%</span></div><div class="progress-track"><div class="progress-fill" style="width:56%;background:#378ADD"></div></div></div>
+          <div class="progress-bar-wrap"><div class="progress-label"><span>Offer released</span><span>38%</span></div><div class="progress-track"><div class="progress-fill" style="width:38%;background:#EF9F27"></div></div></div>
+          <div class="progress-bar-wrap"><div class="progress-label"><span>Onboarding</span><span>19%</span></div><div class="progress-track"><div class="progress-fill" style="width:19%;background:#D85A30"></div></div></div>
+          <div class="progress-bar-wrap" style="margin-top:12px"><div class="progress-label"><span>Confirmation</span><span>6%</span></div><div class="progress-track"><div class="progress-fill" style="width:6%;background:#7F77DD"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-analytics" class="screen">
+      <div class="section-title" style="margin-bottom:12px">Analytics dashboard — company-wise report</div>
+      <div class="stats-grid" style="margin-bottom:1.25rem">
+        <div class="stat-card"><div class="stat-label">Total Employees</div><div class="stat-val">847</div><div class="stat-sub">across all entities</div></div>
+        <div class="stat-card"><div class="stat-label">Attrition Rate</div><div class="stat-val">4.2%</div><div class="stat-sub">YTD</div></div>
+        <div class="stat-card"><div class="stat-label">Avg. Tenure</div><div class="stat-val">3.6 yrs</div><div class="stat-sub"></div></div>
+        <div class="stat-card"><div class="stat-label">New Joiners</div><div class="stat-val">34</div><div class="stat-sub">this quarter</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Company-wise headcount (table view)</div>
+        <table style="width:100%;font-size:13px;border-collapse:collapse;margin-top:4px">
+          <thead><tr style="border-bottom:0.5px solid var(--color-border-tertiary)">
+            <th style="text-align:left;padding:6px 0;font-weight:500;color:var(--color-text-secondary)">Company</th>
+            <th style="text-align:right;padding:6px 0;font-weight:500;color:var(--color-text-secondary)">Headcount</th>
+            <th style="text-align:right;padding:6px 0;font-weight:500;color:var(--color-text-secondary)">Attrition</th>
+            <th style="text-align:right;padding:6px 0;font-weight:500;color:var(--color-text-secondary)">New</th>
+          </tr></thead>
+          <tbody>
+            <tr style="border-bottom:0.5px solid var(--color-border-tertiary)"><td style="padding:7px 0;color:var(--color-text-primary)">Entity A</td><td style="text-align:right;color:var(--color-text-primary)">312</td><td style="text-align:right"><span class="pi-badge status-active">3.8%</span></td><td style="text-align:right;color:var(--color-text-primary)">14</td></tr>
+            <tr style="border-bottom:0.5px solid var(--color-border-tertiary)"><td style="padding:7px 0;color:var(--color-text-primary)">Entity B</td><td style="text-align:right;color:var(--color-text-primary)">218</td><td style="text-align:right"><span class="pi-badge status-pending">5.1%</span></td><td style="text-align:right;color:var(--color-text-primary)">9</td></tr>
+            <tr style="border-bottom:0.5px solid var(--color-border-tertiary)"><td style="padding:7px 0;color:var(--color-text-primary)">Entity C</td><td style="text-align:right;color:var(--color-text-primary)">184</td><td style="text-align:right"><span class="pi-badge status-active">3.2%</span></td><td style="text-align:right;color:var(--color-text-primary)">7</td></tr>
+            <tr><td style="padding:7px 0;color:var(--color-text-primary)">Entity D</td><td style="text-align:right;color:var(--color-text-primary)">133</td><td style="text-align:right"><span class="pi-badge status-info">4.0%</span></td><td style="text-align:right;color:var(--color-text-primary)">4</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="screen-policy" class="screen">
+      <div class="section-title" style="margin-bottom:12px">Policy documents</div>
+      <div class="card">
+        <div class="card-title">HR Policies</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div class="pipeline-item"><span class="pi-name">Leave Policy</span><span class="pi-badge status-active">Active</span></div>
+          <div class="pipeline-item"><span class="pi-name">Travel & Reimbursement Policy</span><span class="pi-badge status-active">Active</span></div>
+          <div class="pipeline-item"><span class="pi-name">Code of Conduct</span><span class="pi-badge status-active">Active</span></div>
+          <div class="pipeline-item"><span class="pi-name">IT Policy</span><span class="pi-badge status-info">v2.1</span></div>
+          <div class="pipeline-item"><span class="pi-name">Separation Policy</span><span class="pi-badge status-active">Active</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-kb" class="screen">
+      <div class="section-title" style="margin-bottom:12px">Knowledge base — manuals</div>
+      <div class="modules-grid">
+        <div class="mod-card"><div class="mod-icon" style="background:#E6F1FB">📘</div><div class="mod-name">ESS User Guide</div><div class="mod-desc">Self-service manual</div></div>
+        <div class="mod-card"><div class="mod-icon" style="background:#E1F5EE">📗</div><div class="mod-name">Recruitment SOP</div><div class="mod-desc">Process guidelines</div></div>
+        <div class="mod-card"><div class="mod-icon" style="background:#FAEEDA">📙</div><div class="mod-name">Payroll Manual</div><div class="mod-desc">Salary processing</div></div>
+        <div class="mod-card"><div class="mod-icon" style="background:#EEEDFE">📒</div><div class="mod-name">PMS Guide</div><div class="mod-desc">Performance review</div></div>
+        <div class="mod-card"><div class="mod-icon" style="background:#FAECE7">📕</div><div class="mod-name">LMS Manual</div><div class="mod-desc">Learning system</div></div>
+        <div class="mod-card"><div class="mod-icon" style="background:#EAF3DE">📓</div><div class="mod-name">IT Declaration</div><div class="mod-desc">Tax filing guide</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchScreen(name, tabEl) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  const s = document.getElementById('screen-' + name);
+  if (s) s.classList.add('active');
+  if (tabEl) tabEl.classList.add('active');
+}
+</script>
